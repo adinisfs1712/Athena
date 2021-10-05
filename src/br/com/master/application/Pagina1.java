@@ -8,6 +8,7 @@ public class Pagina1 {
 
 		System.out.println("primeira pagina");
 		Cliente cliente = new Cliente();
+		String cei = cliente.getCei();
 	}
 
 }
