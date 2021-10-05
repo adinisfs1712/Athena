@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="edicao">
+			<p:panel id="panel" header="Cadastro de Setores">
+				<p:focus context="setor" />
+				<h:panelGrid columns="4" cellpadding="0" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="setor" value="#{msg.coluna_descricao}" />
+					<p:inputText id="setor" label="Descricao"
+						value="#{setorBean.setor.descricao}" size="60" maxlenght="80"
+						required="true" requiredMassage="Campo Obrigatório">
+						<f:validateLength maximum="80" minimum="5" />
+					</p:inputText>
+					<p:commandButton id="salvar" action="#{setorBean.salvar}"
+						value="#{msg.btn_salvar}" update="edicao" />
+					<p:commandButton id="limpar" action="#{setorBean.limpar}"
+						value="#{msg.btn_limpar}" update="edicao" />
+					<p:growl for="anotherKey" />
+				</h:panelGrid>
+			</p:panel>
+			<p:dataTable id="dtSetor" value="#{setorBean.listaSetores}" var="var"
+				emptyMessage="Nao Existem Setores Cadastrados" rows="15"
+				paginator="true" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom" sortOrder="#{var.id}"
+				rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0? 'even-row': 'odd-row'}"
+				rowIndexVar="rowIx">
+
+				<p:column headerText="#{msg.coluna_codigo}" style="width: 4%"
+					sortBy="#{var.id}" filterBy="#{var.id}" filterMatchMode="contains">
+					<h:outputText value="#{var.id}" />
+				</p:column>
+				<p:column headerText="#{msg.coluna_descricao}" style="width: 92%"
+					sortBy="#{var.descricao}" filterBy="#{var.descricao}"
+					filterMatchMode="contains">
+					<h:outputText value="#{var.descricao}" />
+				</p:column>
+				<p:column style="width: 2%" headerText="#{msg.coluna_editar}">
+					<f:ajax event="click" render="@form"
+						listener="#{setorBean.editar(var)}">
+						<h:graphicImage library="img" name="editar16.png" />
+					</f:ajax>
+				</p:column>
+				<p:column style="width: 2%" headerText="#{msg.coluna_excluir}">
+					<f:ajax event="click" render="@form"
+						listener="#{setorBean.excluir(var)}">
+						<h:graphicImage library="img" name="excluir16.png"
+							style="align:center"
+							onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+					</f:ajax>
+				</p:column>
+				<f:facet name="footer">
+					<h:outputText
+						value="Há um total de #{setorBean.contarSetor} Setor(es) cadastrado(s) no sistema." />
+				</f:facet>
+				<p:growl />
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

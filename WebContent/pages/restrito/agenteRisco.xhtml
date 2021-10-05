@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="edicao">
+			<p:panel id="panel" header="Cadastro de Agentes de Riscos">
+				<p:focus context="risco" />
+				<h:panelGrid columns="6" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="risco" value="Descricao" />
+					<p:inputText id="risco" label="Descricao"
+						value="#{agenteRiscoBean.agenteRisco.descricao}" size="60"
+						maxlenght="80" required="true" requiredMassage="Campo Obrigatório">
+						<f:validateLength maximum="80" minimum="5" />
+					</p:inputText>
+					<h:outputLabel for="tipoRisco" value="Tipo de Risco" />
+					<p:selectOneMenu id="tipoRisco"
+						value="#{agenteRiscoBean.selectTipoRisco}" style="width: 110px"
+						required="true" validatorMessage="campo obrigatorios"
+						requiredMessage="Tipo de Risco: Campo obrigatório."
+						label="Tipo de Risco">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{tipoRiscoBean.listaTipoRisco}" var="var"
+							itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+					</p:selectOneMenu>
+					<p:commandButton id="salvar" action="#{agenteRiscoBean.salvar}"
+						value="#{msg.btn_salvar}" update="edicao" />
+					<p:commandButton id="limpar" action="#{agenteRiscoBean.limpar}"
+						value="#{msg.btn_limpar}" update="edicao" />
+					<p:growl for="anotherKey" />
+				</h:panelGrid>
+				<p:dataTable id="dtRisco"
+					value="#{agenteRiscoBean.listaAgenteRiscos}" var="var"
+					emptyMessage="Nao Existem Riscos Cadastrados" rows="14"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom" sortBy="#{var.id}"
+					rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0? 'even-row': 'odd-row'}"
+					rowIndexVar="rowIx">
+
+					<p:column headerText="#{msg.coluna_codigo}" style="width: 4%"
+						sortBy="#{var.id}" filterBy="#{var.id}" filterMatchMode="contains">
+						<h:outputText value="#{var.id}" />
+					</p:column>
+					<p:column headerText="#{msg.coluna_descricao}" style="width: 92%"
+						sortBy="#{var.descricao}" filterBy="#{var.descricao}"
+						filterMatchMode="contains">
+						<h:outputText value="#{var.descricao}" />
+					</p:column>
+					<p:column headerText="Tipo de Risco" style="width: 12%"
+						sortBy="#{var.tipoRisco.descricao}"
+						filterBy="#{var.tipoRisco.descricao}" filterMatchMode="contains">
+						<h:outputText value="#{var.tipoRisco.descricao}" />
+					</p:column>
+
+					<p:column style="width: 2%" headerText="#{msg.coluna_editar}">
+						<f:ajax event="click" render="@form"
+							listener="#{agenteRiscoBean.editar(var)}">
+							<h:graphicImage library="img" name="editar16.png" />
+						</f:ajax>
+					</p:column>
+					<p:column style="width: 2%" headerText="#{msg.coluna_excluir}">
+						<f:ajax event="click" render="@form"
+							listener="#{agenteRiscoBean.excluir(var)}">
+							<h:graphicImage library="img" name="excluir16.png"
+								style="align:center"
+								onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+						</f:ajax>
+					</p:column>
+					<f:facet name="footer">
+						<h:outputText
+							value="Há um total de #{agenteRiscoBean.contarAgenteRisco} Risco(s) cadastrado(s) no sistema." />
+					</f:facet>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

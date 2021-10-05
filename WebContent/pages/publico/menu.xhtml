@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+	<p:tieredMenu id="menuPrincipal" autoDisplay="false">
+		<p:submenu label="Cadastros Básicos">
+			<p:submenu label="Clientes">
+				<p:menuitem value="Edicao de Clientes" url="../restrito/cliente.jsf" />
+				<p:menuitem value="Setores por Cliente"
+					url="../restrito/clienteSetor.jsf" />
+			</p:submenu>
+			<p:menuitem value="Fornecedores" url="../restrito/fornecedor.jsf" />
+			<p:menuitem value="Funcionários" url="../restrito/funcionario.jsf" />
+			<p:separator />
+			<p:menuitem value="Teste" url="../restrito/funcionario.jsf" />
+		</p:submenu>
+
+		<p:submenu label="Tabelas">
+			<p:menuitem value="Agentes de Riscos"
+				url="../restrito/empresa_list.jsf" />
+			<p:menuitem value="CBO" url="../restrito/cbo.jsf" />
+			<p:menuitem value="CNAE" url="../restrito/cnae.jsf" />
+			<p:menuitem value="Especialidades" url="../restrito/especialidade.jsf" />
+			<p:menuitem value="Funções" url="../restrito/funcao.jsf" />
+			<p:menuitem value="Riscos" url="../restrito/risco.jsf" />
+			<p:menuitem value="Setores" url="../restrito/setor.jsf" />
+
+		</p:submenu>
+		<p:submenu label="Configuração">
+			<p:menuitem value="Configura Tela" url="../admin/configura.jsf" />
+			<p:separator />
+			<p:submenu label="Parametros">
+				<p:menuitem value="Empresa" url="../admin/empresa_edit.jsf" />
+				<p:menuitem value="Empresa Listar" url="../admin/empresa_list.jsf" />
+				<p:menuitem value="Periodo Faturamento" url="../admin/index.jsf" />
+				<p:menuitem value="Tipo de Contratos" url="../admin/index.jsf" />
+				<p:menuitem value="Tipo de Cobrança" url="../admin/index.jsf" />
+				<p:menuitem value="Tipo de Fornecedor" url="../admin/index.jsf" />
+			</p:submenu>
+		</p:submenu>
+		<p:separator />
+		<p:submenu label="Teste">
+			<p:menuitem value="Teste" url="../teste/teste.jsf" />
+		</p:submenu>
+		<p:separator />
+		<!-- Preparar logout -->
+		<f:facet name="options">
+			<p:commandButton type="button" value="Sair" icon="ui-icon-extlink"
+				action="securityContextLogout" />
+		</f:facet>
+	</p:tieredMenu>
+</ui:composition>
+</html>

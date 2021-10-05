@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+	<ui:define name="corpo">
+		<p:panel header="Cadastro de Clientes">
+			<h:form id="formTabela" rendered="#{clienteBean.pesquisarState}">
+				<h:panelGrid id="gridTipoCliente" columns="2">
+					<h:commandButton id="novo" value="Novo Cliente"
+						action="#{clienteBean.criar}" update=":formEdicao" />
+				</h:panelGrid>
+
+				<p:dataTable id="dtClientes"
+					value="#{clienteBean.listarAllClientes}" var="var"
+					filteredValue="#{clienteBean.filter}"
+					emptyMessage="Nao Existem Clientes Cadastrados" rows="16"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom" sortBy="#{var.razaoSocial}"
+					rowStyleClass="#{empty rowIx or rowIx mod 2 ne 1 ? 'even-row': 'odd-row'}"
+					rowIndexVar="rowIx">
+					<f:facet name="header">Lista de Clientes Cadastrados</f:facet>
+					<p:column sortBy="#{var.id}" headerText="Código" style="width: 5%"
+						filterBy="#{var.id}">
+						<h:outputText value="#{var.id}" />
+					</p:column>
+					<p:column sortBy="#{var.razaoSocial}" headerText="Razão Social"
+						filterBy="#{var.razaoSocial}" filterMatchMode="contains"
+						style="width: 35%">
+						<h:outputText value="#{var.razaoSocial}" />
+					</p:column>
+					<p:column headerText="CNPJ" style="width: 13%">
+						<h:outputText value="#{var.cnpj}">
+							<f:convertNumber pattern="00.000.000/0000-00" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="E-Mail" style="width: 35%"
+						filterBy="#{var.endereco.municipio.nome}">
+						<h:outputText value="#{var.endereco.municipio.nome}" />
+					</p:column>
+					<p:column style="width: 3%">
+						<h:commandLink action="#{clienteBean.editar(var)}" value="Editar" />
+					</p:column>
+					<p:column style="width: 3%">
+						<h:commandLink action="#{clienteBean.excluir(var)}"
+							value="Excluir" />
+					</p:column>
+					<f:facet name="footer">
+						<h:outputText
+							value="Total de #{clienteBean.contarClientes} Cliente(s) cadastrado(s)." />
+					</f:facet>
+				</p:dataTable>
+			</h:form>
+			<h:form id="formEdicao"
+				rendered="#{clienteBean.editarState or clienteBean.adicionarState}">
+				<p:focus for="razaoSocial" />
+				<h:panelGrid columns="8" style="font-family: Verdana, Arial;"
+					columnClasses="column1, column2, column1, column2, column1, column2, column1">
+					<h:outputLabel for="codigoEmp" value="Código" />
+					<p:inputText id="codigoEmp" label="Codigo" readonly="true"
+						value="#{clienteBean.cliente.id}" size="15" maxlenght="11">
+					</p:inputText>
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel for="razaoSocial" value="Razao Social"
+						styleClass="obrigat" />
+					<p:inputText id="razaoSocial" label="Razao Social"
+						value="#{clienteBean.cliente.razaoSocial}" size="60"
+						maxlenght="200" required="true"
+						requiredMassage="Razão Social: Campo obrigatório">
+						<f:validateLength maximum="200" minimum="10" />
+					</p:inputText>
+					<h:outputLabel />
+					<h:outputLabel />
+
+					<h:outputLabel for="nomeFantasia" value="Nome Fantasia" />
+					<p:inputText id="nomeFantasia" label="Nome Fantasia"
+						value="#{clienteBean.cliente.nomeFantasia}" size="35"
+						maxlenght="30">
+						<f:validateLength maximum="30" />
+					</p:inputText>
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel value="Endereco" styleClass="obrigat" />
+					<p:inputText id="logradouroEnd" label="Logradouro" maxlength="60"
+						required="true" size="65"
+						requiredMessage="Endereço: Campo obrigatório"
+						validatorMessage="Endereco deve ter até 60 caracteres"
+						value="#{clienteBean.endereco.logradouro}">
+						<f:validateLength maximum="60" />
+					</p:inputText>
+					<h:outputLabel value="Numero" styleClass="obrigat" />
+					<p:inputText id="numeroEnd" label="Numero Endereço" maxlength="9"
+						required="true" size="8"
+						requiredMessage="Numero Endereço: Campo Obrigatorio"
+						validatorMessage="Numero deve ter até 8 caracteres"
+						value="#{clienteBean.endereco.numero}">
+						<f:validateLength maximum="8" />
+					</p:inputText>
+					<h:outputLabel value="Complemento" />
+					<p:inputText id="complementoEnd" label="Complemento End"
+						maxlength="20" size="25"
+						validatorMessage="Complemento deve ter até 20 caracteres"
+						value="#{clienteBean.endereco.complemento}">
+						<f:validateLength maximum="20" />
+					</p:inputText>
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel value="Bairro" />
+					<p:inputText id="bairroEnd" label="Bairro" maxlength="40" size="45"
+						validatorMessage="Bairro deve ter até 40 caracteres"
+						value="#{clienteBean.endereco.bairro}">
+						<f:validateLength maximum="40" />
+					</p:inputText>
+					<h:outputLabel value="Estado" styleClass="obrigat" />
+					<p:selectOneMenu id="ufEnd" value="#{clienteBean.ufId}"
+						style="width: 90px" label="Estados da Federacao">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{unidFederacaoBean.listaUFs}" var="uf"
+							itemValue="#{uf.id}" itemLabel="#{uf.sigla}" />
+						<f:ajax render="municipioEnd" event="change"
+							listener="#{clienteBean.carregarCidades}" process="estados" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Municipio" styleClass="obrigat" />
+
+					<p:selectOneMenu id="municipioEnd"
+						value="#{clienteBean.selectMunicipio}" style="width: 240px">
+						<f:selectItem itemLabel="Selecione Municipio.." itemValue="" />
+						<f:selectItems value="#{clienteBean.listaMunicipios}" var="mun"
+							itemValue="#{mun.id}" itemLabel="#{mun.nome}" />
+					</p:selectOneMenu>
+					<h:outputLabel value="CEP" styleClass="obrigat" />
+					<p:inputMask id="cepEnd" label="CEP"
+						value="#{clienteBean.endereco.cep}" size="11" title="CEP"
+						required="true" requiredMessage="CEP: Campo obrigatório."
+						alt="cep" mask="99999-999" converter="inputConverter"
+						maxlength="8" />
+					<h:outputLabel value="E-Mail" />
+					<p:inputText id="email" label="E-Mail"
+						value="#{clienteBean.cliente.email}" size="55" maxlenght="50"
+						validatorMessage="E-Mail invalido">
+					</p:inputText>
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel for="cnpj" value="CNPJ" styleClass="obrigat" />
+					<p:inputMask id="cnpj" label="CNPJ"
+						value="#{clienteBean.cliente.cnpj}" size="23" required="true"
+						requiredMessage="CNPJ: Campo obrigatório." alt="cnpj"
+						mask="99.999.999/9999-99" converter="inputConverter"
+						maxlength="14" />
+					<h:outputLabel for="inscEstadual" value="Inscrição Estadual" />
+					<p:inputText id="inscEstadual" label="Inscrição Estadual"
+						value="#{clienteBean.cliente.inscEstadual}" size="35"
+						maxlenght="30">
+					</p:inputText>
+					<h:outputLabel for="inscMunicipal" value="Inscrição Municipal" />
+					<p:inputText id="inscMunicipal" label="Inscrição Municipal"
+						value="#{clienteBean.cliente.inscMunicipal}" size="35"
+						maxlength="30" />
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel for="dataAdesao" value="Data de Adesão"
+						styleClass="obrigat" />
+					<p:inputMask id="dataAdesao" label="Data de Adesão"
+						value="#{clienteBean.cliente.dataInclusao}" size="14"
+						required="true"
+						requiredMessage="Data de Adesao: Campo obrigatório." alt="cnpj"
+						mask="99/99/9999" converter="inputConverter">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:inputMask>
+					<h:outputLabel for="tipoContrato" value="Tipo de Contrato"
+						styleClass="obrigat" />
+					<p:selectOneMenu id="tipoContrato"
+						value="#{clienteBean.selectTipoContrato}" style="width: 130px"
+						required="true" validatorMessage="campo obrigatorios"
+						requiredMessage="Tipo de contrato: Campo obrigatório."
+						label="Tipo de Contrato">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{tipoContratoBean.listaTipoContrato}"
+							var="var" itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+					</p:selectOneMenu>
+					<h:outputLabel for="programacaoMes" value="Programação Mes"
+						styleClass="obrigat" />
+					<p:selectOneMenu id="programacaoMes"
+						value="#{clienteBean.selectMes}" style="width: 130px"
+						required="true" validatorMessage="campo obrigatorios"
+						requiredMessage="Programação Mes: Campo obrigatório."
+						label="Programação Mes">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{clienteBean.listaMeses}" var="var"
+							itemValue="#{var}" itemLabel="#{var}" />
+					</p:selectOneMenu>
+					<h:outputLabel />
+					<h:outputLabel />
+					<h:outputLabel for="tipoRisco" value="Tipo de Risco"
+						styleClass="obrigat" />
+					<p:selectOneMenu id="tipoRisco"
+						value="#{clienteBean.selectTipoRisco}" style="width: 90px"
+						required="true" validatorMessage="campo obrigatorios"
+						requiredMessage="Tipo de Risco: Campo obrigatório."
+						label="Tipo de Risco">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{tipoRiscoBean.listaTipoRisco}" var="var"
+							itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+					</p:selectOneMenu>
+					<h:outputLabel for="cnaeId" value="CNAE" styleClass="obrigat" />
+					<p:selectOneMenu id="cnaeId" value="#{clienteBean.selectCnae}"
+						style="width: 120px" required="true"
+						validatorMessage="campo obrigatorios"
+						requiredMessage="CNAE: Campo obrigatório." label="CNAE">
+						<f:selectItem itemLabel="Selecione.. " itemValue="" />
+						<f:selectItems value="#{cnaeBean.listaCnae}" var="var"
+							itemValue="#{var.id}" itemLabel="#{var.codigo}" />
+						<f:ajax render="cnaeDescricao" event="change" />
+					</p:selectOneMenu>
+					<h:outputLabel />
+					<h:outputText id="cnaeDescricao" value="#{cnaeBean.descricaoCnae(clienteBean.selectCnae)}" />
+					<h:outputLabel />
+				</h:panelGrid>
+				<p:panel id="panelEndCob" header="Dados de Cobrança">
+					<h:panelGrid columns="8" style="font-family: Verdana, Arial;"
+						columnClasses="column1, column2, column1, column2, column1, column2, column1">
+						<h:outputLabel for="diaFatura" value="Dia da Fatura"
+							styleClass="obrigat" />
+						<p:inputText id="diaFatura" label="Dia da fatura"
+							value="#{clienteBean.cliente.diaFatura}" size="4" maxlenght="2"
+							required="true"
+							requiredMessage="Dia da Fatura: Campo obrigatório."
+							validatorMessage="Dia deve ser entre 1 e 30">
+							<f:validateLongRange minimum="1" maximum="30" for="diaFatura" />
+						</p:inputText>
+						<h:outputLabel for="tipoFatura" value="Tipo de Fatura"
+							styleClass="obrigat" />
+						<p:selectOneMenu id="tipoFatura"
+							value="#{clienteBean.selectTipoFatura}" style="width: 130px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Tipo de fatura: Campo obrigatório."
+							label="Tipo de Fatura">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{tipoFaturaBean.listaTipoFatura}"
+								var="var" itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="tipoCobranca" value="Tipo de Cobrança"
+							styleClass="obrigat" />
+						<p:selectOneMenu id="tipoCobranca"
+							value="#{clienteBean.selectTipoCobranca}" style="width: 130px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Tipo de Cobranca: Campo obrigatório."
+							label="tpContrato">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{tipoCobrancaBean.listaTipoCobranca}"
+								var="var" itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel value="Endereco" />
+						<p:inputText id="logradouroEndCob" label="Logradouro"
+							maxlength="60" size="65"
+							validatorMessage="Endereco deve ter até 60 caracteres"
+							value="#{clienteBean.enderecoCob.logradouro}">
+							<f:validateLength maximum="60" />
+						</p:inputText>
+						<h:outputLabel value="Numero" />
+						<p:inputText id="numeroEndCob" label="Numero Endereço"
+							maxlength="9" size="8"
+							validatorMessage="Numero deve ter até 8 caracteres"
+							value="#{clienteBean.enderecoCob.numero}">
+							<f:validateLength maximum="8" />
+						</p:inputText>
+						<h:outputLabel value="Complemento" />
+						<p:inputText id="complementoEndCob" label="Complemento End"
+							maxlength="20" size="25"
+							validatorMessage="Complemento deve ter até 20 caracteres"
+							value="#{clienteBean.enderecoCob.complemento}">
+							<f:validateLength maximum="20" />
+						</p:inputText>
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel value="Bairro" />
+						<p:inputText id="bairroEndCob" label="Bairro" maxlength="40"
+							size="45" validatorMessage="Bairro deve ter até 40 caracteres"
+							value="#{clienteBean.enderecoCob.bairro}">
+							<f:validateLength maximum="40" />
+						</p:inputText>
+						<h:outputLabel value="Estado" />
+						<p:selectOneMenu id="ufEndCob" value="#{clienteBean.ufIdCob}"
+							style="width: 90px" label="Estados da Federacao">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{unidFederacaoBean.listaUFs}" var="uf"
+								itemValue="#{uf.id}" itemLabel="#{uf.sigla}" />
+							<f:ajax render="municipioEndCob" event="change"
+								listener="#{clienteBean.carregarCidadesCob}" process="estados" />
+						</p:selectOneMenu>
+						<h:outputLabel value="Municipio" />
+						<p:selectOneMenu id="municipioEndCob"
+							value="#{clienteBean.selectMunicipioCob}" style="width: 240px">
+							<f:selectItem itemLabel="Selecione Municipio.." itemValue="" />
+							<f:selectItems value="#{clienteBean.listaMunicipiosCob}"
+								var="mun" itemValue="#{mun.id}" itemLabel="#{mun.nome}" />
+						</p:selectOneMenu>
+						<h:outputLabel value="CEP" />
+						<p:inputMask id="cepEndCob" label="CEP"
+							value="#{clienteBean.enderecoCob.cep}" size="10" title="CEP"
+							alt="cep" mask="99999-999" converter="inputConverter"
+							maxlength="8" />
+					</h:panelGrid>
+					<p:commandButton id="ExcluirEndereçoCob"
+						title="Excluir Endereco de cobrança"
+						action="#{clienteBean.excluirEndCob}" value="Excluir Endereço"
+						rendered="#{clienteBean.enderecoCob.logradouro ne null}" />
+				</p:panel>
+				<h:panelGrid columns="9" style="font-family: Verdana, Arial;" id="inputContatos"
+					columnClasses="column1, column2, column1, column2, column1, column2, column1">
+					<h:outputLabel for="nomeContato" value="Nome Contato" />
+					<p:inputText id="nomeContato" label="Codigo"
+						value="#{clienteBean.clienteContato.nome}" size="35"
+						maxlenght="30">
+					</p:inputText>
+					<h:outputLabel for="setorContato" value="Setor" />
+					<p:inputText id="setorContato" label="ContatoSetor"
+						value="#{clienteBean.clienteContato.setor}" size="35"
+						maxlenght="30" />
+					<h:outputLabel for="telefContato" value="Telefone" />
+					<p:inputMask id="telefContato" label="Telefone Contato"
+						value="#{clienteBean.clienteContato.telefone}" size="18"
+						title="Telefone" mask="(99) 9.9999-9999" converter="inputConverter"
+						maxlength="8" />
+					<h:outputLabel for="emailContato" value="E-Mail" />
+					<p:inputText id="emailContato" label="E-Mail"
+						value="#{clienteBean.clienteContato.email}" size="55"
+						maxlenght="50" validatorMessage="E-Mail invalido">
+						<!-- f:validateRegex pattern="[a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9\-\_\.]" /-->
+					</p:inputText>
+					<h:commandButton id="btOkContato"
+						action="#{clienteBean.salvarContato}" value="Ok" immediate="true"
+						update="dtContatosClientes" />
+				</h:panelGrid>
+
+				<p:dataTable id="dtContatosClientes"
+					value="#{clienteBean.listaClienteContatos}" var="var"
+					emptyMessage="Nao Existem Contatos Cadastrados" rows="3"
+					editable="true">
+					<f:facet name="header">Lista de Contatos</f:facet>
+
+					<p:ajax event="rowEdit" listener="#{clienteBean.onEdit()}" />
+					<p:ajax event="rowEditCancel" listener="#{clienteBean.onCancel()}" />
+
+					<p:column headerText="Nome" style="width: 25%">
+						<h:outputText value="#{var.nome}" />
+					</p:column>
+					<p:column headerText="Setor" style="width: 25%">
+						<h:outputText value="#{var.setor}" />
+					</p:column>
+					<p:column headerText="Telefone" style="width: 13%">
+						<h:outputText value="#{var.telefone}" />
+					</p:column>
+					<p:column headerText="E-mail" style="width: 25%">
+						<h:outputText value="#{var.email}" />
+					</p:column>
+
+					<p:column style="width: 3%">
+						<f:ajax event="click" render="@form"
+							listener="#{clienteBean.editarContato(var)}">
+							<h:graphicImage library="img" name="editar16.png" />
+						</f:ajax>
+					</p:column>
+					<p:column style="width: 3%">
+						<f:ajax event="click" render="@form"
+							listener="#{clienteBean.excluir(var)}">
+							<h:graphicImage library="img" name="excluir16.png" />
+						</f:ajax>
+					</p:column>
+				</p:dataTable>
+				<h:commandButton id="btSalvar" value="Salvar" onclick="true"
+					action="#{clienteBean.salvar}" update=":dtContatosClientes" />
+				<h:commandButton id="btCancelar" action="#{clienteBean.limpar}"
+					value="Voltar" update=":formTabela" immediate="true" />
+				<br />
+				<h:outputText value="Campos Obrigatórios" styleClass="fatal" />
+				<p:messages />
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

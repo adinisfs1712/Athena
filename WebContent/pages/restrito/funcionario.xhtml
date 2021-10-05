@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="#{controleTemplate.template}">
+	<ui:define name="corpo">
+		<p:panel header="Cadastro de Funcionários" >
+			<h:form id="formTabela">
+				<p:panel header="Cliente"
+					rendered="#{funcionarioBean.pesquisarState}">
+					<h:panelGrid columns="6" rendered="#{clienteBean.editarState}">
+						<h:outputLabel value="Código" for="codigoCli" />
+						<p:inputText id="codigoCli" label="Codigo do Cliente"
+							readonly="true" value="#{clienteBean.cliente.id}" />
+						<h:outputLabel for="razaoSocial" value="Razão Social" />
+						<p:inputText id="razaoSocial" label="Razao Social"
+							value="#{clienteBean.cliente.razaoSocial}" size="60"
+							readonly="true" />
+						<h:commandButton id="btNovo" value="Novo funcionário"
+							action="#{funcionarioBean.criar(clienteBean.cliente)}"
+							update=":edicao" />
+					</h:panelGrid>
+					<p:dataTable id="dtClientes"
+						rendered="#{clienteBean.pesquisarState}"
+						value="#{clienteBean.listarAllClientes}" var="var"
+						filteredValue="#{clienteBean.filter}"
+						emptyMessage="Nao Existem Clientes Cadastrados" rows="15"
+						paginator="true" sortBy="#{var.razaoSocial}"
+						rowStyleClass="#{empty rowIx or rowIx mod 2 ne 1 ? 'even-row': 'odd-row'}"
+						rowIndexVar="rowIx">
+						<f:facet name="header">Lista de Clientes</f:facet>
+						<p:column sortBy="#{var.id}" headerText="Código" style="width: 5%"
+							filterBy="#{var.id}">
+							<h:outputText value="#{var.id}" />
+						</p:column>
+						<p:column sortBy="#{var.razaoSocial}" headerText="Razão Social"
+							filterBy="#{var.razaoSocial}" filterMatchMode="contains"
+							style="width: 35%">
+							<h:outputText value="#{var.razaoSocial}" />
+						</p:column>
+						<p:column headerText="CNPJ" style="width: 13%">
+							<h:outputText value="#{var.cnpj}" />
+						</p:column>
+						<p:column style="width: 3%">
+							<h:commandLink actionListener="#{clienteBean.selecionar(var)}"
+								value="Selecionar" />
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText
+								value="Total de #{clienteBean.contarClientes} Cliente(s) cadastrado(s)." />
+						</f:facet>
+					</p:dataTable>
+
+					<p:dataTable id="dtFuncionario"
+						rendered="#{clienteBean.cliente.id ne null and funcionarioBean.pesquisarState}"
+						value="#{funcionarioBean.funcionariosByCliente(clienteBean.cliente)}"
+						var="var" filteredValue="#{funcionarioBean.filter}"
+						emptyMessage="Nao Existem Funcionários Cadastrados" rows="10"
+						paginator="true" sortBy="#{var.nome}"
+						rowStyleClass="#{empty rowIx or rowIx mod 2 ne 1 ? 'even-row': 'odd-row'}"
+						rowIndexVar="rowIx">
+						<f:facet name="header">Lista de Funcionários Cadastrados</f:facet>
+						<p:column sortBy="#{var.id}" headerText="Código" style="width: 5%"
+							filterBy="#{var.id}">
+							<h:outputText value="#{var.id}" />
+						</p:column>
+						<p:column sortBy="#{var.nome}" headerText="Nome"
+							filterBy="#{var.nome}" filterMatchMode="contains"
+							style="width: 35%">
+							<h:outputText value="#{var.nome}" />
+						</p:column>
+
+						<p:column style="width: 3%" headerText="#{msg.coluna_editar}">
+							<f:ajax event="click" render=":edicao"
+								listener="#{funcionarioBean.editar(var)}">
+								<h:graphicImage library="img" name="editar16.png" />
+							</f:ajax>
+						</p:column>
+						<p:column style="width: 3%" headerText="#{msg.coluna_excluir}">
+							<f:ajax event="click" render="@form"
+								listener="#{funcionarioBean.excluir(var)}">
+								<h:graphicImage library="img" name="excluir16.png"
+									onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+							</f:ajax>
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText
+								value="Total de #{funcionarioBean.contarFuncionarios(clienteBean.cliente)} Funcionários(s) cadastrado(s)." />
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+
+			<h:form id="formEdicao"
+				rendered="#{clienteBean.cliente.id ne null and funcionarioBean.adicionarState or funcionarioBean.editarState}">
+				<p:focus for="nomeFunc" />
+				<h:outputLabel value="Cliente" for="codigoCli" />
+				<p:inputText id="codigoCli" label="Codigo do Cliente" size="80" 
+					readonly="true" value="#{clienteBean.cliente.id} - #{clienteBean.cliente.razaoSocial}" />
+				<p:panel id="func" header="Funcionário">
+					<h:panelGrid columns="6" style="font-family: Verdana, Arial;"
+						columnClasses="column1, column2, column1, column2, column1, column2">
+						<h:outputLabel for="codigoFunc" value="Código" />
+						<p:inputText id="codigoFunc" label="Codigo"
+							value="#{funcionarioBean.funcionario.id}" size="15"
+							maxlenght="11" readonly="true">
+						</p:inputText>
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel for="nomeFunc" value="#{msg.coluna_nome}"
+							styleClass="obrigat" />
+						<p:inputText id="nomeFunc" label="#{msg.coluna_nome}"
+							value="#{funcionarioBean.funcionario.nome}" size="60"
+							maxlenght="30" required="true"
+							requiredMessage="Nome: Campo obrigatório">
+							<f:validateLength maximum="60" />
+						</p:inputText>
+
+						<h:outputLabel for="dataNasc" value="Data de Nascimento"
+							styleClass="obrigat" />
+						<p:inputMask id="dataNasc" label="Data de Nascimento"
+							value="#{funcionarioBean.funcionario.dataNascimento}" size="18"
+							required="true"
+							requiredMessage="Data de Nascimento: Campo obrigatório."
+							alt="dataNasc" mask="99/99/9999" converter="inputConverter">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputMask>
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel for="sexo" value="Sexo" styleClass="obrigat" />
+						<p:selectOneMenu id="sexo" value="#{funcionarioBean.selectSexo}"
+							style="width: 90px" required="true"
+							validatorMessage="campo obrigatorios"
+							requiredMessage="Sexo: Campo obrigatório." label="Sexo">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{funcionarioBean.listaSexo}" var="var"
+								itemValue="#{var}" itemLabel="#{var}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="estCivil" value="Estado Civil"
+							styleClass="obrigat" />
+						<p:selectOneMenu id="estCivil"
+							value="#{funcionarioBean.selectEstCivil}" style="width: 110px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Estado Civil: Campo obrigatório."
+							label="Estado Civil">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{estadoCivilBean.listaEstadoCivil}"
+								var="var" itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="natural" value="Naturalidade"
+							styleClass="obrigat" />
+						<p:selectOneMenu id="natural"
+							value="#{funcionarioBean.selectUfId}" style="width: 190px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Naturalidade: Campo obrigatório."
+							label="Estados da Federacao">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{unidFederacaoBean.listaUFs}" var="uf"
+								itemValue="#{uf.id}" itemLabel="#{uf.nome}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="identidade" value="Identidade" />
+						<p:inputText id="identidade" label="Identidade"
+							value="#{funcionarioBean.funcionario.identidade}" size="15"
+							maxlenght="11" />
+						<h:outputLabel for="ctpsNro" value="Nro CTPS" />
+						<p:inputText id="ctpsNro" label="Numero CTPS"
+							value="#{funcionarioBean.funcionario.cartProfissional}" size="15"
+							maxlenght="10" />
+						<h:outputLabel for="ctpsSerie" value="Série CTPS" />
+						<p:inputText id="ctpsSerie" label="Serie CTPS"
+							value="#{funcionarioBean.funcionario.serieProf}" size="15"
+							maxlenght="10" />
+						<h:outputLabel for="pis" value="PIS/PASEP" />
+						<p:inputText id="pis" label="PIS / PASEP"
+							value="#{funcionarioBean.funcionario.codigoPisPasep}" size="20"
+							maxlenght="18" />
+						<h:outputLabel for="dataAdmissao" value="Data de Admissão"
+							styleClass="obrigat" />
+						<p:inputMask id="dataAdmissao" label="Data de Admissao na empresa"
+							value="#{funcionarioBean.funcionario.dataAdmissao}" size="14"
+							required="true"
+							requiredMessage="Data de Admissao: Campo obrigatório."
+							mask="99/99/9999" converter="inputConverter">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputMask>
+						<h:outputLabel />
+						<h:outputLabel />
+						<h:outputLabel for="setor" value="Setor" styleClass="obrigat" />
+						<p:selectOneMenu id="setor" value="#{funcionarioBean.selectSetor}"
+							style="width: 190px" required="true"
+							validatorMessage="campo obrigatorios"
+							requiredMessage="Setor: Campo obrigatório." label="Setor">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{setorBean.listaSetores}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="funcao" value="Função" styleClass="obrigat" />
+						<p:selectOneMenu id="funcao"
+							value="#{funcionarioBean.selectFuncao}" style="width: 350px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Funcao: Campo obrigatório." label="Funcao">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{funcaoBean.listaFuncoes}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="turno" value="Turno" />
+						<p:selectOneMenu id="turno" value="#{funcionarioBean.selectTurno}"
+							style="width: 90px" validatorMessage="campo obrigatorios"
+							requiredMessage="Turno: Campo obrigatório." label="Turno">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{turnoBean.listaTurno}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="tipoRisco" value="Grau de Risco"
+							styleClass="obrigat" />
+						<p:selectOneMenu id="tipoRisco"
+							value="#{funcionarioBean.selectTipoRisco}" style="width: 90px"
+							required="true" validatorMessage="campo obrigatorios"
+							requiredMessage="Tipo de Risco: Campo obrigatório."
+							label="Tipo de Risco">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{tipoRiscoBean.listaTipoRisco}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="cbo" value="C.B.O." styleClass="obrigat" />
+						<p:selectOneMenu id="cbo" value="#{funcionarioBean.selectCbo}"
+							style="width: 450px" required="true" panelStyle="width:450px"
+							effect="fade" validatorMessage="campo obrigatorios"
+							requiredMessage="CBO: Campo obrigatório." label="CBO">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{cboBean.listaCbo}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<h:commandButton id="btSalvar"
+						actionListener="#{funcionarioBean.salvar}" value="Salvar"
+						update=":formTabela" />
+					<h:commandButton id="btCancelar" action="#{funcionarioBean.limpar}"
+						value="Voltar" update=":formTabela" immediate="true" />
+					<br />
+					<h:outputText value="Campos Obrigatórios" styleClass="fatal" />
+					<p:messages />
+				</p:panel>
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+
+</html>

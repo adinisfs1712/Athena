@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<f:view>
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>#{msgs.aba}</title>
+		<style type="text/css">
+</style>
+		<h:outputStylesheet name="estilo.css" library="css" />
+	</h:head>
+	<h:body>
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="center">
+				<p:panel>
+					<p:outputLabel id="system" value="#{msgs.sistema}" />
+				</p:panel>
+				<ui:insert name="corpo">
+					Lado Central
+					</ui:insert>
+			</p:layoutUnit>
+			<p:layoutUnit id="menu" position="west" size="182" header="Menu"
+				collapsible="true">
+				<ui:insert name="menu">
+					<ui:include src="../admin/menu.xhtml" />
+				</ui:insert>
+			</p:layoutUnit>
+			<!-- Define Menu -->
+			<p:layoutUnit position="south" styleClass="rodape">
+				<h:graphicImage id="logo" name="logo_gpc_xirod.png" library="logos" />&nbsp;&nbsp;
+					<h:outputText value="#{msgs.razaoSocial}" />&nbsp;&nbsp;
+					<h:outputText value="#{msgs.telefone}" />&nbsp;&nbsp;
+			E-Mail:
+			<h:outputText value="#{msgs.email}" />
+			</p:layoutUnit>
+		</p:layout>
+	</h:body>
+</f:view>
+</html>

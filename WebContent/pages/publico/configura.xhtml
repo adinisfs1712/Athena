@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="#{controleTemplate.template}">
+<ui:define name="corpo">
+<h:form id="Edicao">
+	<p:panel id="panel">
+	<p:focus context="panel"/>
+	<h:panelGrid columns="1">
+			<h:outputText value="Tema para seu usuário:" />
+			<p:themeSwitcher value="#{skinBean.meuTema}"
+				style="width:200px" effect="fade" id="statefulSwitcher">
+				<f:selectItem itemLabel="Escolha o tema:" itemValue="" />
+				<f:selectItems value="#{skinBean.themes}" />
+				<p:ajax listener="#{skinBean.salvarTema}" />
+			</p:themeSwitcher>
+		</h:panelGrid>
+		</p:panel>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

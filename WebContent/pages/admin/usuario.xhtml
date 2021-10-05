@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="edicao">
+			<p:panel id="panel" header="Cadastro de Empresas">
+			<p:focus context="panel"/>  
+				<h:panelGrid columns="2" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="nome" value="Nome: " style="float: right;" />
+					<p:inputText id="nome" label="Nome"
+						value="#{empresaBean.empresa.razaoSocial}" size="60" maxlenght="200"
+						required="true" requiredMassage="Nome é obrigatório">
+						<f:validateLength maximum="200" minimum="10" />
+					</p:inputText>
+					<h:outputText />
+					<p:commandButton id="pesquisar" action="#{empresaBean.editar}"
+						value="Pesquisar" update="edicao, dtEmpresas" />
+				</h:panelGrid>
+				<p:messages />
+				
+			</p:panel>
+			<p:dataTable id="dtEmpresas" value="#{empresaBean.listaEmpresas}"
+				var="cli" emptyMessage="Nao Existem Empresas Cadastrados" rows="10"
+				style="height:200px" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+				<f:facet name="header">Lista de Empresas</f:facet>
+				<p:column headerText="Nome" style="width: 35%">
+					<h:outputText value="#{cli.razaoSocial}" />
+				</p:column>
+				<p:column headerText="CPF" style="width: 13%">
+					<h:outputText value="#{cli.cnpj}" />
+				</p:column>
+				<p:column headerText="Endereco" style="width: 35%">
+					<h:outputText value="#{cli.endereco.endereco}" />
+				</p:column>
+				<p:column style="width: 3%">
+					<f:ajax event="click" render="@form"
+						listener="#{empresaBean.editar(cli)}">
+						<h:graphicImage library="img" name="editar16.png" />
+					</f:ajax>
+				</p:column>
+				<p:column style="width: 3%">
+					<f:ajax event="click" render="@form"
+						listener="#{empresaBean.excluir(cli)}">
+						<h:graphicImage library="img" name="excluir16.png" />
+					</f:ajax>
+				</p:column>
+				<f:facet name="footer">
+					<h:outputText
+						value="Há um total de #{empresaBean.contarEmpresa} Empresa(s) cadastrado(s) no sistema." />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

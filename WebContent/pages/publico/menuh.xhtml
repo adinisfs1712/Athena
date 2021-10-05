@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+	<p:menubar autoDisplay="false">
+		<p:submenu label="Cadastros Básicos">
+			<p:submenu label="Clientes">
+				<p:menuitem value="Edicao de Clientes" url="../restrito/cliente.jsf" />
+				<p:menuitem value="Setores por Cliente"
+					url="../restrito/clienteSetor.jsf" />
+			</p:submenu>
+			<p:menuitem value="Fornecedores" url="../restrito/fornecedor.jsf" />
+			<p:menuitem value="Funcionários" url="../restrito/funcionario.jsf" />
+			<p:menuitem value="Prestadores" url="../restrito/prestador.jsf" />
+			<p:separator />
+			<p:menuitem value="Teste" url="../restrito/funcionario.jsf" />
+		</p:submenu>
+
+		<p:submenu label="Tabelas">
+			<p:menuitem value="Agentes de Riscos"
+				url="../restrito/agenteRisco.jsf" />
+			<p:menuitem value="CBO" url="../restrito/cbo.jsf" />
+			<p:menuitem value="CNAE" url="../restrito/cnae.jsf" />
+			<p:menuitem value="Especialidades"
+				url="../restrito/especialidade.jsf" />
+			<p:menuitem value="Funções" url="../restrito/funcao.jsf" />
+			<p:menuitem value="Setores" url="../restrito/setor.jsf" />
+
+		</p:submenu>
+		<p:submenu label="Parametros">
+			<p:menuitem value="Empresa" url="../admin/empresa_edit.jsf" />
+			<p:menuitem value="Empresa Listar" url="../admin/empresa_list.jsf" />
+			<p:menuitem value="Periodo Faturamento" url="../publico/index.jsf" />
+			<p:menuitem value="Tipo de Contrato"
+				url="../restrito/tipoContrato.jsf" />
+			<p:menuitem value="Tipo de Cobrança" url="../publico/index.jsf" />
+			<p:menuitem value="Tipo de Fornecedor" url="../publico/index.jsf" />
+		</p:submenu>
+		<p:submenu label="Relatórios">
+
+		</p:submenu>
+		<p:submenu label="Teste">
+			<p:menuitem value="Configura Tela" url="../publico/configura.jsf" />
+			<p:separator />
+			<p:menuitem value="Teste" url="../teste/teste.jsf" />
+		</p:submenu>
+		<p:menuitem value="Sair" url="http://www.primefaces.org"
+			icon="ui-icon-close" />
+		<f:facet name="options">
+			<p:inputText style="margin-right:15px" />			
+			<h:commandButton type="button" value="Sair" icon="ui-icon-extlink" />
+		</f:facet>
+	</p:menubar>
+</ui:composition>
+</html>

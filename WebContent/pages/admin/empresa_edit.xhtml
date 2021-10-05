@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="lista">
+			<p:panel id="panel" header="Cadastro de Empresas">
+				<p:focus context="panel" />
+				<h:panelGrid columns="4" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="nome" value="Nome: " style="float: right;" />
+					<p:inputText id="nome" label="Nome"
+						value="#{empresaBean.empresa.razaoSocial}" size="60"
+						maxlenght="200" required="true"
+						requiredMassage="Nome é obrigatório">
+						<f:validateLength maximum="200" minimum="10" />
+					</p:inputText>
+					<h:outputText />
+					<p:commandButton id="pesquisar" action="#{empresaBean.editar}"
+						value="Pesquisar" update=":edicao, dtEmpresas" icon="ui-icon-search" />
+				</h:panelGrid>
+				<p:messages />
+
+				<p:dataTable id="dtEmpresas" value="#{empresaBean.listaEmpresas}"
+					var="cli" emptyMessage="Nao Existem Empresas Cadastrados">
+					<f:facet name="header">Lista de Empresas</f:facet>
+					<p:column headerText="Nome" style="width: 35%">
+						<h:outputText value="#{cli.razaoSocial}" />
+					</p:column>
+					<p:column headerText="CPF" style="width: 13%">
+						<h:outputText value="#{cli.cnpj}" />
+					</p:column>
+					<p:column headerText="Endereco" style="width: 35%">
+						<h:outputText value="#{cli.endereco.logradouro}" />
+					</p:column>
+					<p:column style="width: 3%">
+						<f:ajax event="click" render="@form"
+							listener="#{empresaBean.editar(cli)}">
+							<h:graphicImage library="img" name="editar16.png" />
+						</f:ajax>
+					</p:column>
+					<p:column style="width: 3%">
+						<f:ajax event="click" render="@form"
+							listener="#{empresaBean.excluir(cli)}">
+							<h:graphicImage library="img" name="excluir16.png"
+								onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+						</f:ajax>
+					</p:column>
+					<f:facet name="footer">
+						<h:outputText
+							value="Há um total de #{empresaBean.contarEmpresa} Empresa(s) cadastrada(s) no sistema." />
+					</f:facet>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		<h:form id="edicao">
+			<p:panel id="panel" header="Cadastro de Empresas">
+				<p:focus context="razaoSocial" />
+				<h:panelGrid columns="2" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="codigoEmp" value="Código" />
+					<h:outputLabel for="razaoSocial" value="*Razao Social" />
+					<p:inputText id="codigoEmp" label="Codigo"
+						value="#{empresaBean.empresa.id}" size="15" maxlenght="11">
+						<p:ajax event="change"
+							listener="#{empresaBean.pesquisarEmpresa()}" update="edicao" />
+					</p:inputText>
+					<p:inputText id="razaoSocial" label="Razao Social"
+						value="#{empresaBean.empresa.razaoSocial}" size="60"
+						maxlenght="200" required="true"
+						requiredMassage="Razao Social é obrigatório">
+						<f:validateLength maximum="200" minimum="10" />
+					</p:inputText>
+					<h:outputLabel value="*CNPJ" />
+					<h:outputLabel value="Nome Fantasia" />
+					<p:inputMask id="cnpj" label="CNPJ"
+						value="#{empresaBean.empresa.cnpj}" size="20" title="Cnpj"
+						required="true" requiredMessage="CNPJ Campo obrigatório."
+						alt="cnpj" mask="99.999.999/9999-99" converter="inputConverter"
+						maxlength="14" />
+					<p:inputText id="nomeFantasia" label="Nome Fantasia"
+						value="#{empresaBean.empresa.nomeFantasia}" size="35"
+						maxlenght="30">
+						<f:validateLength maximum="30" />
+					</p:inputText>
+				</h:panelGrid>
+				<h:panelGrid columns="4" style="font-family: Verdana, Arial;">
+					<h:outputLabel value="*Endereco" />
+					<h:outputLabel value="*Numero" />
+					<h:outputLabel value="Complemento" />
+					<h:outputText />
+					<p:inputText id="logradouroEnd" label="Logradouro" maxlength="60"
+						required="true" size="65"
+						requiredMessage="Endereço: Campo obrigatório"
+						validatorMessage="Endereco deve ter até 60 caracteres"
+						value="#{empresaBean.endereco.logradouro}">
+						<f:validateLength maximum="60" />
+					</p:inputText>
+					<p:inputText id="numeroEnd" label="Numero End" maxlength="9"
+						required="true" size="8" requiredMessage="Campo Obrigatorio"
+						validatorMessage="Numero deve ter até 8 caracteres"
+						value="#{empresaBean.endereco.numero}">
+						<f:validateLength maximum="8" />
+					</p:inputText>
+					<p:inputText id="complementoEnd" label="Complemento End"
+						maxlength="20" size="25"
+						validatorMessage="Complemento deve ter até 20 caracteres"
+						value="#{empresaBean.endereco.complemento}">
+						<f:validateLength maximum="20" />
+					</p:inputText>
+					<h:outputText />
+					<h:outputLabel value="Bairro" />
+					<h:outputLabel value="*Estado" />
+					<h:outputLabel value="*Municipio" />
+					<h:outputLabel value="*CEP" />
+					<p:inputText id="bairroEnd" label="Bairro" maxlength="40" size="45"
+						validatorMessage="Bairro deve ter até 60 caracteres"
+						value="#{empresaBean.endereco.bairro}">
+						<f:validateLength maximum="40" />
+					</p:inputText>
+					<p:selectOneMenu id="ufEnd" value="#{empresaBean.ufId}"
+						style="width: 90px" required="true"
+						validatorMessage="campo obrigatorios"
+						requiredMessage="Estado: Campo obrigatório."
+						label="Estados da Federacao">
+						<f:selectItem itemLabel="Selecione.. " itemValue="0" />
+						<f:selectItems value="#{unidFederacaoBean.listaUFs}" var="uf"
+							itemValue="#{uf.id}" itemLabel="#{uf.sigla}" />
+						<f:ajax render="municipioEnd" event="change"
+							listener="#{empresaBean.carregarCidades}" process="estados" />
+					</p:selectOneMenu>
+					<p:selectOneMenu id="municipioEnd"
+						value="#{empresaBean.selectMunicipio}" style="width: 240px"
+						requiredMessage="Campo obrigatório.">
+						<f:selectItem itemLabel="Selecione Municipio" itemValue="0" />
+						<f:selectItems value="#{empresaBean.listaMunicipios}" var="mun"
+							itemValue="#{mun.id}" itemLabel="#{mun.nome}" />
+					</p:selectOneMenu>
+					<p:inputMask id="cepEnd" label="CEP"
+						value="#{empresaBean.endereco.cep}" size="10" title="CEP"
+						required="true" requiredMessage="CEP Campo obrigatório." alt="cep"
+						mask="99999-999" converter="inputConverter" maxlength="8" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" style="font-family: Verdana, Arial;">
+					<h:outputLabel value="Telefone 1" />
+					<h:outputLabel value="Telefone 2" />
+					<p:inputMask id="telefone1" label="Telefone Principal"
+						value="#{empresaBean.empresa.telefone1}" size="15"
+						title="Telefone" alt="telef1" mask="(99) 99999-9999"
+						converter="inputConverter" maxlength="8" />
+					<p:inputMask id="telefone2" label="Telefone 2"
+						value="#{empresaBean.empresa.telefone2}" size="15"
+						title="Telefone" alt="telef2" mask="(99) 99999-9999"
+						converter="inputConverter" maxlength="11" />
+				</h:panelGrid>
+				* Campos Obrigatorios<br />
+				<p:commandButton id="salvar" action="#{empresaBean.salvar}"
+					value="Salvar" />
+				<p:commandButton id="limpar" action="#{empresaBean.limpar}"
+					value="Limpar" update="edicao" />
+				<p:messages />
+				<p:growl for="anotherKey" />
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

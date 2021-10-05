@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="edicao">
+			<p:panel id="panel" header="Cadastro de Especialidades">
+				<p:focus context="especialidade" />
+				<h:panelGrid columns="4" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="especialidade" value="Descricao" />
+					<p:inputText id="especialidade" label="Descricao"
+						value="#{especialidadeBean.especialidade.descricao}" size="60"
+						maxlenght="80" required="true" requiredMassage="Campo Obrigatório">
+						<f:validateLength maximum="80" minimum="5" />
+					</p:inputText>
+					<p:commandButton id="salvar" action="#{especialidadeBean.salvar}"
+						value="#{msg.btn_salvar}" update="edicao" />
+					<p:commandButton id="limpar" action="#{especialidadeBean.limpar}"
+						value="#{msg.btn_limpar}" update="edicao" />
+					<p:messages for="someKey" />
+					<p:growl for="anotherKey" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:dataTable id="dtEspecialidade"
+				value="#{especialidadeBean.listaEspecialidades}" var="var" rows="13"
+				paginator="true" sortOrder="#{var.id}"
+				rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0? 'even-row': 'odd-row'}"
+				rowIndexVar="rowIx">
+
+				<p:column headerText="#{msg.coluna_codigo}" style="width: 4%"
+					sortBy="#{var.id}" filterBy="#{var.id}" filterMatchMode="contains">
+					<h:outputText value="#{var.id}" />
+				</p:column>
+				<p:column headerText="#{msg.coluna_descricao}" style="width: 92%"
+					sortBy="#{var.descricao}" filterBy="#{var.descricao}"
+					filterMatchMode="contains">
+					<h:outputText value="#{var.descricao}" />
+				</p:column>
+				<p:column style="width: 2%" headerText="#{msg.coluna_editar}">
+					<f:ajax event="click" render="@form"
+						listener="#{especialidadeBean.editar(var)}">
+						<h:graphicImage library="img" name="editar16.png" />
+					</f:ajax>
+				</p:column>
+				<p:column style="width: 2%" headerText="#{msg.coluna_excluir}">
+					<f:ajax event="click" render="@form"
+						listener="#{especialidadeBean.excluir(var)}">
+						<h:graphicImage library="img" name="excluir16.png"
+							style="align:center"
+							onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+					</f:ajax>
+				</p:column>
+				<f:facet name="footer">
+					<h:outputText
+						value="Há um total de #{especialidadeBean.contarEspecialidade} Especialidade(s) cadastrada(s) no sistema." />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

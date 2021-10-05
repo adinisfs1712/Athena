@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="#{controleTemplate.template}">
+	<ui:param name="titulo" value="param Cadastro de Setores" />
+	<ui:define name="corpo">
+		<p:panel menuTitle="Cadastro de Setor" header="Cadastro de Setores">
+			<h:form id="formTabela" rendered="#{funcionarioBean.pesquisarState}">
+				<p:panel header="Cliente">
+					<p:focus for="codigoCli" />
+					<h:panelGrid columns="4" style="font-family: Verdana, Arial;">
+						<h:outputLabel for="codigoCli" value="Código" />
+						<p:inputText id="codigoCli" label="Codigo"
+							value="#{clienteBean.cliente.id}" size="15" maxlenght="11">
+							<p:ajax event="change" listener="#{clienteBean.pesquisarCliente}"
+								update="@form" />
+						</p:inputText>
+						<h:outputLabel for="razaoSocial" value="Razao Social" />
+						<p:inputText id="razaoSocial" label="Razao Social"
+							value="#{clienteBean.cliente.razaoSocial}" size="60"
+							maxlenght="200" required="true"
+							requiredMassage="Razão Social: Campo obrigatório">
+							<f:validateLength maximum="200" minimum="10" />
+						</p:inputText>
+					</h:panelGrid>
+				</p:panel>
+				<p:dataTable id="dtClientes"
+					rendered="#{clienteBean.pesquisarState}"
+					value="#{clienteBean.listarAllClientes}" var="var"
+					filteredValue="#{clienteBean.filter}"
+					emptyMessage="Nao Existem Clientes Cadastrados" rows="15"
+					paginator="true" sortBy="#{var.razaoSocial}"
+					rowStyleClass="#{empty rowIx or rowIx mod 2 ne 1 ? 'even-row': 'odd-row'}"
+					rowIndexVar="rowIx">
+					<f:facet name="header">Lista de Clientes</f:facet>
+					<p:column sortBy="#{var.id}" headerText="Código" style="width: 5%"
+						filterBy="#{var.id}">
+						<h:outputText value="#{var.id}" />
+					</p:column>
+					<p:column sortBy="#{var.razaoSocial}" headerText="Razão Social"
+						filterBy="#{var.razaoSocial}" filterMatchMode="contains"
+						style="width: 35%">
+						<h:outputText value="#{var.razaoSocial}" />
+					</p:column>
+					<p:column headerText="CNPJ" style="width: 13%">
+						<h:outputText value="#{var.cnpj}" />
+					</p:column>
+					<p:column style="width: 3%">
+						<h:commandLink actionListener="#{clienteBean.selecionar(var)}"
+							value="Selecionar" />
+					</p:column>
+					<p:column style="width: 8%">
+						<h:commandLink action="#{setorBean.editar(var)}"
+							value="Editar Setor" />
+					</p:column>
+					<f:facet name="footer">
+						<h:outputText
+							value="Total de #{clienteBean.contarClientes} Cliente(s) cadastrado(s)." />
+					</f:facet>
+				</p:dataTable>
+				<p:panel menuTitle="Cadastro de Setores" header="Setores"
+					rendered="#{clienteBean.editarState}">
+					<h:panelGrid columns="4" style="font-family: Verdana, Arial;"
+						rendered="#{clienteBean.editarState}">
+						<h:outputLabel for="setor" value="Setor" />
+						<p:selectOneMenu id="setor" value="#{setorBean.selectSetor}"
+							style="width: 190px" required="true"
+							validatorMessage="campo obrigatorios"
+							requiredMessage="Setor: Campo obrigatório." label="Setor">
+							<f:selectItem itemLabel="Selecione.. " itemValue="" />
+							<f:selectItems value="#{setorBean.listaSetores}" var="var"
+								itemValue="#{var.id}" itemLabel="#{var.descricao}" />
+						</p:selectOneMenu>
+						<h:commandButton id="btSalvar"
+							actionListener="#{funcionarioBean.salvar}" value="Salvar"
+							update=":formTabela" />
+					</h:panelGrid>
+				</p:panel>
+				<p:dataTable id="dtFuncionarios" value="#{setorBean.listaSetores}"
+					var="var"
+					rendered="#{setorBean.editarState and clienteBean.editarState}"
+					emptyMessage="Nao Existem Setores Cadastrados" rows="13"
+					style="height:200px" paginator="true" sortBy="nome"
+					rowStyleClass="#{empty rowIx or rowIx mod 2 ne 1 ? 'even-row': 'odd-row'}"
+					rowIndexVar="rowIx">
+					<f:facet name="header">Lista de Setores Cadastrados</f:facet>
+					<p:column sortBy="#{var.id}" headerText="Código" style="width: 5%">
+						<h:outputText value="#{var.id}" />
+					</p:column>
+					<p:column sortBy="#{var.descricao}" headerText="Descrição"
+						style="width: 35%">
+						<h:outputText value="#{var.descricao}" />
+					</p:column>
+					<p:column style="width: 3%">
+						<h:commandLink action="#{funcionarioBean.editar(var)}"
+							value="Editar" />
+					</p:column>
+					<f:facet name="footer">
+						<h:outputText
+							value="Total de #{setorBean.contarSetor} setor(es) cadastrado(s)." />
+					</f:facet>
+				</p:dataTable>
+			</h:form>
+
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

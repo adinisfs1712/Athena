@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="#{controleTemplate.template}">
+
+	<ui:define name="corpo">
+		<h:form id="edicao">
+			<p:growl for="anotherKey" />
+			<p:panel id="panel" header="Tabela de Tipos de Contratos" >
+				<p:focus context="desc" />
+				<h:panelGrid columns="4" style="font-family: Verdana, Arial;">
+					<h:outputLabel for="desc" value="Descricao" />
+					<p:inputText id="desc" label="Descricao"
+						value="#{tipoContratoBean.tpContrato.descricao}" size="25"
+						maxlenght="25" required="true" requiredMassage="Campo Obrigatório">
+						<f:validateLength maximum="25" minimum="5" />
+					</p:inputText>
+					<p:commandButton id="salvar" action="#{tipoContratoBean.salvar}"
+						value="#{msg.btn_salvar}" update="edicao" />
+					<p:commandButton id="limpar" action="#{tipoContratoBean.limpar}"
+						value="#{msg.btn_limpar}" update="edicao" />
+				</h:panelGrid>
+
+				<p:dataTable id="dtLista"
+					value="#{tipoContratoBean.listaTipoContrato}" var="var"
+					emptyMessage="Nao Existem Tipos Cadastrados" rows="14"
+					sortOrder="#{var.id}" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" 
+					rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0? 'even-row': 'odd-row'}"
+					rowIndexVar="rowIx">
+
+					<p:column headerText="#{msg.coluna_codigo}" style="width: 4%"
+						sortBy="#{var.id}">
+						<h:outputText value="#{var.id}" />
+					</p:column>
+					<p:column headerText="#{msg.coluna_descricao}" style="width: 92%"
+						sortBy="#{var.descricao}">
+						<h:outputText value="#{var.descricao}" />
+					</p:column>
+					<p:column style="width: 2%" headerText="#{msg.coluna_editar}">
+						<f:ajax event="click" render="@form"
+							listener="#{tipoContratoBean.editar(var)}">
+							<h:graphicImage library="img" name="editar16.png" />
+						</f:ajax>
+					</p:column>
+					<p:column style="width: 2%" headerText="#{msg.coluna_excluir}">
+						<f:ajax event="click" render="@form"
+							listener="#{tipoContratoBean.excluir(var)}">
+							<h:graphicImage library="img" name="excluir16.png"
+								style="align:center"
+								onclick="if (!confirm('Confirma a exclusão?')) return false;" />
+						</f:ajax>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
