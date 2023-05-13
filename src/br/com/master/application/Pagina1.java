@@ -10,6 +10,7 @@ public class Pagina1 {
 		Cliente cliente = new Cliente();
 		String cei = cliente.getCei();
 		String nome = cliente.getNomeFantasia();
+		System.out.println("CEI "+cei);
 	}
 
 }
